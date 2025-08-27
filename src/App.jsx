@@ -1,34 +1,64 @@
+import { useState } from 'react';
+import TodoItem from './todoitem.jsx';
+
 export default function App() {
- return (
- <main className="min-h-dvh bg-gray-50 grid place-items-center p-6">
- <section className="w-full max-w-xl rounded-2xl border bg-white p-8
-shadow">
- <h1 className="text-3xl font-bold tracking-tight">React 19 + Tailwind
-v4</h1>
- <p className="mt-2 text-gray-600">
- Setup moderno funcionando. Edita <code>src/App.jsx</code> y guarda
-para ver cambios.
- </p>
- <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
- <div className="rounded-xl border p-4">
- <p className="text-sm text-gray-500">Estado</p>
- <p className="text-lg font-semibold">OK ✅</p>
- </div>
- <div className="rounded-xl border p-4">
- <p className="text-sm text-gray-500">Tailwind</p>
- <p className="text-lg font-semibold">v4 (CSS-first)</p>
- </div>
- <div className="rounded-xl border p-4">
- <p className="text-sm text-gray-500">Build</p>
- <p className="text-lg font-semibold">Vite</p>
- </div>
- </div>
- <button className="mt-6 inline-flex items-center justify-center
-rounded-xl border px-4 py-2 font-medium hover:bg-gray-50 active:scale-
-[0.98]">
- Botón Tailwind
- </button>
- </section>
- </main>
- )
+  const [tareas, setTareas] = useState([]);
+  const [input, setInput] = useState('');
+
+  const agregarTareas = () => {
+    if (input.trim()) {
+      setTareas([
+        ...tareas,
+        { id: Date.now(), texto: input.trim(), completada: false },
+      ]);
+      setInput('');
+    }
+  };
+
+  const toggleComplete = (id) => {
+    setTareas(
+      tareas.map((tarea) =>
+        tarea.id === id ? { ...tarea, completada: !tarea.completada } : tarea
+      )
+    );
+  };
+
+  const eliminarTarea = (id) => {
+  setTareas(tareas.filter((tarea) => tarea.id !== id));
+};
+
+
+  return (
+    <div className="max-w-md mx-auto mt-10">
+      <h1 className="text-3xl font-bold mb-5 text-center">
+        MI LISTA DE TAREAS REACT
+      </h1>
+      <div className="flex gap-3 mb-4">
+        <input
+        placeholder='Nueva tarea'
+          className="flex-1 p-3 shadow-md rounded"
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={agregarTareas}
+        >
+          Agregar Tarea
+        </button>
+      </div>
+      <div>
+        {tareas.map((tarea) => (
+          <TodoItem
+            key={tarea.id}
+            tarea={tarea}
+            toggleComplete={() => toggleComplete(tarea.id)}
+            eliminarTarea={eliminarTarea}
+            
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
